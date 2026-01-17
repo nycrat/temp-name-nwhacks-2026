@@ -1,34 +1,19 @@
 export interface Course {
-    id: string;
-    code: string; 
-    name: string; 
-    section: string;
-    location: string;
-    instructor: string;
+    code: string;
+    name: string;
     description: string;
-    image?: string;
-    sneakScore: 'High' | 'Medium' | 'Low';
-    level: 'Beginner' | 'Intermediate' | 'Advanced';
-    duration: number;
-    startTime: string;
-    endTime: string;
-    directions: string; // URL or either wayfinder or google maps (google maps set up right now )
-    imageUrl: string; 
+    imageUrl: string;
+    level: "Beginner" | "Intermediate" | "Advanced";
   }
   
   export interface LiveClass {
     id: string;
-    code: string;
-    name: string;
-    section: string;
-    location: string;
+    course: Course;
     instructor: string;
-    description: string;
-    sneakScore: 'High' | 'Medium' | 'Low';
-    level: 'Beginner' | 'Intermediate' | 'Advanced';
-    duration: number;
-    startTime: string;
-    endTime: string;
-    directions: string; 
+    location: string;
+    startTime: Date;
+    durationMinutes: number;
+    capacity: number;
+    sneakScore: "High" | "Medium" | "Low";
     progress?: number;
   }
