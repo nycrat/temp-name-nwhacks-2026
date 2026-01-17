@@ -48,7 +48,7 @@ for tr in schedule_table.find_all("tr")[1:]:
             i += 1
             continue
 
-        if tds[i].get("class")[0] in ["LEC", "DIS"]:
+        if tds[i].get("class")[0] in ["LEC", "DIS", "SEM"]:
             duration = int(tds[i].get("rowspan"))
             schedule_matrix_delay[current_day] = duration - 1
             print(
