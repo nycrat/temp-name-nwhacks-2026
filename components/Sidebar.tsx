@@ -40,7 +40,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <div className="p-8 pb-6">
         <div className="flex items-center justify-between mb-1">
           <h1 className="text-white text-3xl font-bold tracking-tight">
-            Today's Audit
+            Today's Lectures to Attend
           </h1>
         </div>
         <p className="text-gray-500 text-sm font-medium uppercase tracking-widest">

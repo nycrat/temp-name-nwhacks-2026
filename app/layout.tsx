@@ -8,7 +8,7 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "Audit | Lecture Discovery",
+  title: "ATTD - Lecture Discovery",
   description: "An academic dashboard for discovering live lectures.",
 };
 
