@@ -17,36 +17,31 @@ export interface SearchFilters {
 
 export async function buildAndExecuteQuery(
   filters: SearchFilters,
+  now: Date,
 ): Promise<LiveClass[]> {
   const sql = neon(`${process.env.DATABASE_URL}`);
 
-  let baseQuery = sql`
-    SELECT lc.*, c.code as course_code
-    FROM live_classes lc
-    JOIN courses c ON lc."courseCode" = c.code
-    WHERE 1=1
-  `;
-
-  // TODO make this a parameter
-  const currentTime = new Date();
   const bufferMins = filters.starts_within_mins ?? 60;
-  const futureLimit = new Date(currentTime.getTime() + bufferMins * 60000);
-  const currentTimeStr = `${currentTime.getHours().toString().padStart(2, "0")}:${currentTime.getMinutes().toString().padStart(2, "0")}`;
+  const futureLimit = new Date(now.getTime() + bufferMins * 60000);
+  const currentTimeStr = `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`;
   const futureTimeStr = `${futureLimit.getHours().toString().padStart(2, "0")}:${futureLimit.getMinutes().toString().padStart(2, "0")}`;
 
   try {
+    const patterns = filters.subjects?.map((s) => s + " %") || [];
+
     const allClasses = await sql`
-      SELECT lc.*, c.code as course_code
-      FROM live_classes lc
-      JOIN courses c ON lc."courseCode" = c.code
-      WHERE lc."startTime" >= ${currentTimeStr}
-        AND lc."startTime" <= ${futureTimeStr}
-      LIMIT 500
+      SELECT *
+      FROM live_classes
+      WHERE "startTime" >= ${currentTimeStr}
+        AND "startTime" <= ${futureTimeStr}
+        AND "courseCode" LIKE ANY (${patterns})
+        AND weekday = ${now.getDay()}
+      LIMIT 200
     `;
 
     let rows = allClasses
       .filter((row: any) => {
-        const courseCode = row.course_code;
+        const courseCode = row.courseCode;
 
         // filter by subject code
         if (filters.subjects && filters.subjects.length > 0) {
@@ -89,7 +84,7 @@ export async function buildAndExecuteQuery(
         const course =
           await sql`SELECT * FROM courses WHERE code = ${row.courseCode}`;
 
-        const { courseCode, course_code, ...rest } = row;
+        const { courseCode, ...rest } = row;
         return {
           ...rest,
           course: course[0],

@@ -297,7 +297,7 @@ User Input: '{user_input}'`;
 
 export async function POST(request: NextRequest) {
   try {
-    const { query } = await request.json();
+    const { query, now } = await request.json();
 
     if (!query || typeof query !== "string") {
       return NextResponse.json({ error: "Query is required" }, { status: 400 });
@@ -380,7 +380,7 @@ export async function POST(request: NextRequest) {
     console.log("Filters from AI:", filters);
 
     try {
-      const results = await buildAndExecuteQuery(filters);
+      const results = await buildAndExecuteQuery(filters, new Date(now));
       return NextResponse.json({ results } as { results: LiveClass[] });
     } catch (queryError) {
       console.error("Query execution error:", queryError);
