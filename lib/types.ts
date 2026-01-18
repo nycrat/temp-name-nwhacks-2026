@@ -8,7 +8,6 @@ export interface LiveClass {
   capacity: number;
   sneakScore: "High" | "Medium" | "Low";
   type: "Lecture" | "Seminar" | "Lab";
-  progress?: number;
 }
 
 export interface Course {
