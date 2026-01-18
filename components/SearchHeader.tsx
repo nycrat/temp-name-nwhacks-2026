@@ -38,14 +38,14 @@ export const SearchHeader: React.FC<SearchHeaderProps> = ({
         <div
           className={`relative bg-panel-dark/80 backdrop-blur-md border border-white/10 rounded-2xl p-2 transition-all duration-300 ${isLoading ? "border-primary/40" : "group-hover:border-white/20"}`}
         >
-          <div className="flex items-center gap-4 px-4 py-3">
+          <div className="flex items-center gap-4 px-4 py-2">
             <span
               className={`material-symbols-outlined text-gray-400 text-2xl ${isLoading ? "animate-spin text-primary" : ""}`}
             >
               {isLoading ? "progress_activity" : "auto_awesome"}
             </span>
             <input
-              className="bg-transparent border-none focus:ring-0 text-base font-medium text-white w-full placeholder-gray-600 font-display focus:outline-none h-6 leading-6"
+              className="bg-transparent border-none focus:ring-0 text-base font-medium text-white w-full placeholder-gray-600 font-display focus:outline-none h-6 leading-6 my-1"
               type="text"
               placeholder="Ask about classes using natural language..."
               value={value}
@@ -56,7 +56,7 @@ export const SearchHeader: React.FC<SearchHeaderProps> = ({
             {value && !isLoading && (
               <button
                 onClick={() => setValue("")}
-                className="text-gray-500 hover:text-white transition-colors p-1"
+                className="text-gray-500 hover:text-white transition-colors"
               >
                 <span className="material-symbols-outlined text-sm">close</span>
               </button>
