@@ -3,13 +3,15 @@ import { LiveClass } from '../types';
 
 interface LiveClassCardProps {
   item: LiveClass;
+  onSelect?: (item: LiveClass) => void;
+  isSelected?: boolean;
 }
 
-export const LiveClassCard: React.FC<LiveClassCardProps> = ({ item }) => {
+export const LiveClassCard: React.FC<LiveClassCardProps> = ({ item, onSelect, isSelected }) => {
   const sneakScoreColors = {
-    'High': 'bg-green-500',
+    'Low': 'bg-green-500',
     'Medium': 'bg-yellow-500',
-    'Low': 'bg-red-500'
+    'High': 'bg-red-500'
   };
 
   const progress = item.progress || 0;
@@ -17,19 +19,15 @@ export const LiveClassCard: React.FC<LiveClassCardProps> = ({ item }) => {
   const endTime = new Date(item.startTime.getTime() + item.durationMinutes * 60000);
   const endTimeString = endTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-  // ubc learning spaces link
-  const formattedLocation = item.location
-  .toLowerCase()
-  .replace(/\s+/g, '-');
-
-const mapLink = `https://learningspaces.ubc.ca/classrooms/${formattedLocation}/`;
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (onSelect) onSelect(item);
+  };
 
   return (
-    <a 
-      href={mapLink} 
-      target="_blank" 
-      rel="noopener noreferrer"
-      className={`block bg-panel-dark p-4 rounded-xl border border-white/5 hover:border-primary/50 transition-all group ${progress > 90 ? 'opacity-60' : ''}`}
+    <button 
+      onClick={handleClick}
+      className={`w-full text-left block bg-panel-dark p-4 rounded-xl border transition-all group ${isSelected ? 'border-primary shadow-lg shadow-primary/10 ring-1 ring-primary/20' : 'border-white/5 hover:border-primary/50'} ${progress > 90 ? 'opacity-60' : ''}`}
     >
       <div className="flex justify-between items-start">
         <div className="flex flex-col max-w-[70%]">
@@ -60,10 +58,10 @@ const mapLink = `https://learningspaces.ubc.ca/classrooms/${formattedLocation}/`
             </div>
          </div>
          <div className="flex items-center gap-1 text-[9px] font-bold text-primary opacity-0 group-hover:opacity-100 transition-opacity uppercase">
-            <span>Navigate</span>
-            <span className="material-symbols-outlined text-xs">arrow_outward</span>
+            <span>Audit Details</span>
+            <span className="material-symbols-outlined text-xs">info</span>
          </div>
       </div>
-    </a>
+    </button>
   );
 };

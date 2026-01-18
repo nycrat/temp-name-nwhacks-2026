@@ -1,16 +1,23 @@
+
 'use client';
 
 import React, { useState, useCallback, useEffect } from 'react';
 import { Sidebar } from '../components/Sidebar';
 import { SearchHeader } from '../components/SearchHeader';
 import { Header } from '../components/Header';
+import { MapPanel } from '../components/MapPanel';
+import { CourseDetailsDrawer } from '../components/CourseDetailsDrawer';
 import { INITIAL_LIVE_CLASSES } from '../constants';
-import { LiveClass } from '../types';
+import { Course, LiveClass } from '../types';
 
 export default function Home() {
   const [liveClasses, setLiveClasses] = useState<LiveClass[]>(INITIAL_LIVE_CLASSES);
+  const [searchResults, setSearchResults] = useState<Course[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [isVoiceMode, setIsVoiceMode] = useState(false);
+  const [selectedClass, setSelectedClass] = useState<LiveClass | null>(null);
+  
+  // Update class progress based on real time
   useEffect(() => {
     const updateProgress = () => {
       const now = new Date();
@@ -30,20 +37,50 @@ export default function Home() {
   const handleSearch = useCallback(async (query: string) => {
     if (!query.trim()) return;
     setIsLoading(true);
-    await new Promise(r => setTimeout(r, 1200));
-    setIsLoading(false);
+    setTimeout(() => {
+      console.log("Simulating search for:", query);
+      setIsLoading(false);
+    }, 800);
   }, []);
+
+  const handleSelectClass = (item: LiveClass) => {
+    setSelectedClass(item);
+    setSearchResults([]); // clear search results when focusing on a specific class map location
+  };
 
   return (
     <div className="flex flex-col h-screen w-full bg-background-dark text-white font-display overflow-hidden">
       <Header />
       
       <div className="flex flex-1 overflow-hidden">
-        <Sidebar liveClasses={liveClasses} />
+        <Sidebar 
+          liveClasses={liveClasses} 
+          selectedClassId={selectedClass?.id}
+          onSelectClass={handleSelectClass}
+        />
         
-        <main className="flex-1 relative flex flex-col items-center justify-center bg-background-dark overflow-hidden p-8">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl aspect-square bg-primary/5 blur-[120px] rounded-full pointer-events-none"></div>
-          <SearchHeader onSearch={handleSearch} isLoading={isLoading} />
+        <main className="flex-1 relative flex flex-col">
+          {/* top Fixed Search Area */}
+          <div className="w-full pt-8 pb-4 flex flex-col items-center bg-gradient-to-b from-background-dark to-transparent z-40">
+            <SearchHeader 
+              onSearch={handleSearch} 
+              isLoading={isLoading} 
+            />
+          </div>
+
+          <div className="flex-1 flex flex-col overflow-hidden">
+
+            {/* Map Area (Bottom) */}
+            <div className={`flex-1 transition-all duration-700 ${searchResults.length > 0 ? 'h-1/3 opacity-40' : 'h-full opacity-100'}`}>
+              <MapPanel selectedClass={selectedClass} />
+            </div>
+          </div>
+
+          {/* Course Details Bottom Drawer */}
+          <CourseDetailsDrawer 
+            selectedClass={selectedClass} 
+            onClose={() => setSelectedClass(null)} 
+          />
         </main>
       </div>
     </div>

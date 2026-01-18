@@ -4,9 +4,11 @@ import { LiveClassCard } from './LiveClassCard';
 
 interface SidebarProps {
   liveClasses: LiveClass[];
+  selectedClassId?: string;
+  onSelectClass: (item: LiveClass) => void;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ liveClasses }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ liveClasses, selectedClassId, onSelectClass }) => {
   const now = new Date();
 
   const liveNow = liveClasses.filter(cls => {
@@ -17,7 +19,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ liveClasses }) => {
   const upcoming = liveClasses.filter(cls => cls.startTime > now);
 
   return (
-    <aside className="w-[30%] min-w-[360px] h-full flex flex-col border-r border-white/5 bg-background-dark/50 backdrop-blur-xl">
+    <aside className="w-[30%] min-w-[360px] h-full flex flex-col border-r border-white/5 bg-background-dark/50 backdrop-blur-xl shrink-0">
       <div className="p-8 pb-6">
         <div className="flex items-center justify-between mb-1">
           <h1 className="text-white text-2xl font-bold tracking-tight">Today's Audit</h1>
@@ -34,13 +36,16 @@ export const Sidebar: React.FC<SidebarProps> = ({ liveClasses }) => {
             </h2>
             <div className="space-y-3">
               {liveNow.map((item) => (
-                <LiveClassCard key={item.id} item={item} />
+                <LiveClassCard 
+                  key={item.id} 
+                  item={item} 
+                  isSelected={item.id === selectedClassId}
+                  onSelect={onSelectClass}
+                />
               ))}
             </div>
           </section>
         )}
-
-        {/* upcoming live classes */}
 
         {upcoming.length > 0 && (
           <section>
@@ -50,17 +55,15 @@ export const Sidebar: React.FC<SidebarProps> = ({ liveClasses }) => {
             </div>
             <div className="space-y-3">
               {upcoming.map((item) => (
-                <LiveClassCard key={item.id} item={item} />
+                <LiveClassCard 
+                  key={item.id} 
+                  item={item} 
+                  isSelected={item.id === selectedClassId}
+                  onSelect={onSelectClass}
+                />
               ))}
             </div>
           </section>
-        )}
-
-        {liveClasses.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-20 opacity-30">
-            <span className="material-symbols-outlined text-4xl mb-2">event_busy</span>
-            <p className="text-xs font-bold uppercase">No classes today</p>
-          </div>
         )}
       </div>
     </aside>
