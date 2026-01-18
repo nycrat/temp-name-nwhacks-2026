@@ -85,26 +85,15 @@ export const MapPanel: React.FC<MapPanelProps> = ({
   const getCoordsForRoom = async (
     room: string,
   ): Promise<{ lat: number; lng: number }> => {
-    return new Promise((resolve) => {
-      const geocoder = new window.google.maps.Geocoder();
-      // construct address based on building code
-      const buildingCode = room.split(" ")[0].toUpperCase();
-      const address = `UBC ${buildingCode}`;
-
-      geocoder.geocode({ address }, (results: any, status: string) => {
-        if (status === "OK" && results && results[0]) {
-          const location = results[0].geometry.location;
-          resolve({
-            lat: location.lat(),
-            lng: location.lng(),
-          });
-        } else {
-          // fallback to UBC center if geocoding fails
-          const fallbackCoords = { lat: 49.2676, lng: -123.2473 };
-          resolve(fallbackCoords);
-        }
-      });
-    });
+    const buildingCode = room.split(" ")[0].toLowerCase();
+    const building = buildingCoords.find(
+      (b) => b.code === buildingCode
+    );
+    if (building) {
+      return { lat: building.lat, lng: building.lng };
+    }
+    // fallback to UBC center if not found
+    return { lat: 49.2676, lng: -123.2473 };
   };
 
   // load building coordinates from file
