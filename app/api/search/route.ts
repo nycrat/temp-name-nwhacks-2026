@@ -7,7 +7,7 @@ const SYSTEM_PROMPT = `You are a search parameter extractor for a university cou
 2. level_min: Integer (e.g. 100). Default 100.
 3. level_max: Integer (e.g. 400). Default 600.
 4. max_duration_mins: Integer. Default 180.
-5. starts_within_mins: Integer. How many minutes from NOW should the class start? Default 60.
+5. starts_within_mins: Integer. How many minutes from NOW should the class start? Default 120.
 6. min_capacity: Integer. Minimum room capacity. Use null if not specified.
 7. max_capacity: Integer. Maximum room capacity. Use null if not specified.
 

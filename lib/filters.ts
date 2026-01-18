@@ -36,8 +36,12 @@ export async function buildAndExecuteQuery(
         AND "startTime" <= ${futureTimeStr}
         AND "courseCode" LIKE ANY (${patterns})
         AND weekday = ${now.getDay()}
+        ORDER BY "startTime" ASC
       LIMIT 200
     `;
+
+    console.log(currentTimeStr, futureTimeStr, patterns, now.getDay())
+    console.log(allClasses.length)
 
     let rows = allClasses
       .filter((row: any) => {

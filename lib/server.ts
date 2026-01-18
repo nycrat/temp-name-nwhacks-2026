@@ -4,7 +4,7 @@ import { neon } from "@neondatabase/serverless";
 export async function getLiveClasses(now: Date): Promise<LiveClass[]> {
   const sql = neon(`${process.env.DATABASE_URL}`);
   const weekday = now.getDay();
-  const hour = now.getHours().toString() + ":00";
+  const hour = now.getHours().toString().padStart(2, "0") + ":00";
   const rows = await sql`
     SELECT *
     FROM live_classes
