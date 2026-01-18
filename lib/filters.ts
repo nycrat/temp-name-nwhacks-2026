@@ -1,6 +1,5 @@
 import { LiveClass } from "./types";
 import { neon } from "@neondatabase/serverless";
-import { now } from "./constants";
 
 export interface SearchFilters {
   subjects?: string[];
@@ -28,7 +27,8 @@ export async function buildAndExecuteQuery(
     WHERE 1=1
   `;
 
-  const currentTime = now;
+  // TODO make this a parameter
+  const currentTime = new Date();
   const bufferMins = filters.starts_within_mins ?? 60;
   const futureLimit = new Date(currentTime.getTime() + bufferMins * 60000);
   const currentTimeStr = `${currentTime.getHours().toString().padStart(2, "0")}:${currentTime.getMinutes().toString().padStart(2, "0")}`;

@@ -1,8 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { LiveClass } from "../lib/types";
-import { formatTime, getEnd, stringToTime } from "@/lib/helpers";
+import { formatTime, getEnd, getLiveClassDatetime } from "@/lib/helpers";
 import { useNow } from "./NowProvider";
 
 interface LiveClassCardProps {
@@ -28,14 +28,22 @@ export const LiveClassCard: React.FC<LiveClassCardProps> = ({
     Low: "bg-red-500",
   };
 
-  const progress =
-    now > stringToTime(item.startTime) && now < getEnd(item)
-      ? ((now.getTime() - stringToTime(item.startTime).getTime()) /
+  function getProgress(now: Date) {
+    return now > getLiveClassDatetime(item) && now < getEnd(item)
+      ? ((now.getTime() - getLiveClassDatetime(item).getTime()) /
           1000 /
           60 /
           item.durationMinutes) *
-        100
+          100
       : 0;
+  }
+
+  const [progress, setProgress] = useState(getProgress(now));
+
+  useEffect(() => {
+    setProgress(getProgress(now));
+    console.log(getProgress(now));
+  }, [now]);
 
   // load / update class info
   if (item.capacity >= 150) {
@@ -46,9 +54,9 @@ export const LiveClassCard: React.FC<LiveClassCardProps> = ({
     item.sneakScore = "Low";
   }
 
-  const timeString = formatTime(stringToTime(item.startTime));
+  const timeString = formatTime(getLiveClassDatetime(item));
   const endTime = new Date(
-    stringToTime(item.startTime).getTime() + item.durationMinutes * 60000,
+    getLiveClassDatetime(item).getTime() + item.durationMinutes * 60000,
   );
   const endTimeString = formatTime(endTime);
 

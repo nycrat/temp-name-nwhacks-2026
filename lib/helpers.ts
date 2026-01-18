@@ -1,14 +1,24 @@
-import { now } from "./constants";
 import { LiveClass } from "./types";
 
-export function stringToTime(timeString: string): Date {
-  const [hours, minutes] = timeString.split(":").map(Number);
+function getNextWeekday(weekday: number, fromDate = new Date()) {
+  const date = new Date(fromDate); // copy to avoid mutating
+  const currentDay = date.getDay();
 
-  const today = new Date(now);
+  // Calculate how many days to add
+  let diff = (weekday - currentDay + 7) % 7;
+  if (diff === 0) diff = 7; // always get next, not today
 
-  today.setHours(hours, minutes, 0, 0);
+  date.setDate(date.getDate() + diff);
+  return date;
+}
 
-  return today;
+export function getLiveClassDatetime(liveClass: LiveClass): Date {
+  const [hours, minutes] = liveClass.startTime.split(":").map(Number);
+
+  const classDate = new Date(getNextWeekday(liveClass.weekday));
+  classDate.setHours(hours, minutes, 0, 0);
+
+  return classDate;
 }
 
 export function formatTime(datetime: Date) {
@@ -33,7 +43,7 @@ export function formatDatetime(datetime: Date): string {
 
 export function getEnd(liveClass: LiveClass) {
   return new Date(
-    stringToTime(liveClass.startTime).getTime() +
+    getLiveClassDatetime(liveClass).getTime() +
       liveClass.durationMinutes * 60000,
   );
 }
