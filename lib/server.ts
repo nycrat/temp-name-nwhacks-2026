@@ -7,7 +7,7 @@ export async function getLiveClasses() {
   const weekday = (now.getDay() + 7) % 7;
   const hour = now.getHours().toString() + ":00";
   const rows =
-    await sql`SELECT * FROM live_classes WHERE weekday=${weekday} AND "startTime"=${hour} LIMIT 100`;
+    await sql`SELECT * FROM live_classes WHERE weekday=${weekday} AND "startTime"=${hour} AND instructor!='' LIMIT 100`;
 
   const res = (await Promise.all(
     rows.map(async (row) => {
