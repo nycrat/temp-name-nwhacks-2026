@@ -1,21 +1,9 @@
 import { LiveClass } from "./types";
 
-function getNextWeekday(weekday: number, fromDate = new Date()) {
-  const date = new Date(fromDate); // copy to avoid mutating
-  const currentDay = date.getDay();
-
-  // Calculate how many days to add
-  let diff = (weekday - currentDay + 7) % 7;
-  if (diff === 0) diff = 7; // always get next, not today
-
-  date.setDate(date.getDate() + diff);
-  return date;
-}
-
-export function getLiveClassDatetime(liveClass: LiveClass): Date {
+export function getLiveClassDatetime(liveClass: LiveClass, now: Date): Date {
   const [hours, minutes] = liveClass.startTime.split(":").map(Number);
 
-  const classDate = new Date(getNextWeekday(liveClass.weekday));
+  const classDate = new Date(now);
   classDate.setHours(hours, minutes, 0, 0);
 
   return classDate;
@@ -41,9 +29,9 @@ export function formatDatetime(datetime: Date): string {
   return `${year}-${month}-${day}T${hours}:${minutes}`;
 }
 
-export function getEnd(liveClass: LiveClass) {
+export function getEnd(liveClass: LiveClass, now: Date) {
   return new Date(
-    getLiveClassDatetime(liveClass).getTime() +
+    getLiveClassDatetime(liveClass, now).getTime() +
       liveClass.durationMinutes * 60000,
   );
 }

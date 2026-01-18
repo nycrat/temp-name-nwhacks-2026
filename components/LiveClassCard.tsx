@@ -39,8 +39,8 @@ export const LiveClassCard: React.FC<LiveClassCardProps> = ({
   };
 
   function getProgress(now: Date) {
-    return now > getLiveClassDatetime(item) && now < getEnd(item)
-      ? ((now.getTime() - getLiveClassDatetime(item).getTime()) /
+    return now > getLiveClassDatetime(item, now) && now < getEnd(item, now)
+      ? ((now.getTime() - getLiveClassDatetime(item, now).getTime()) /
           1000 /
           60 /
           item.durationMinutes) *
@@ -63,9 +63,9 @@ export const LiveClassCard: React.FC<LiveClassCardProps> = ({
     item.sneakScore = "Low";
   }
 
-  const timeString = formatTime(getLiveClassDatetime(item));
+  const timeString = formatTime(getLiveClassDatetime(item, now));
   const endTime = new Date(
-    getLiveClassDatetime(item).getTime() + item.durationMinutes * 60000,
+    getLiveClassDatetime(item, now).getTime() + item.durationMinutes * 60000,
   );
   const endTimeString = formatTime(endTime);
 

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React from "react";
 import { LiveClass } from "../lib/types";
 import { LiveClassCard } from "./LiveClassCard";
 import { getEnd, getLiveClassDatetime } from "@/lib/helpers";
@@ -24,14 +24,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
   }
 
   const liveNow = liveClasses.filter((cls) => {
-    const end = getEnd(cls);
-    return now >= getLiveClassDatetime(cls) && now <= end;
+    const end = getEnd(cls, now);
+    return now >= getLiveClassDatetime(cls, now) && now <= end;
   });
 
-  const upcoming = liveClasses.filter((cls) => getLiveClassDatetime(cls) > now);
+  const upcoming = liveClasses.filter(
+    (cls) => getLiveClassDatetime(cls, now) > now,
+  );
 
   const past = liveClasses.filter((cls) => {
-    const end = getEnd(cls);
+    const end = getEnd(cls, now);
     return end < now;
   });
 
