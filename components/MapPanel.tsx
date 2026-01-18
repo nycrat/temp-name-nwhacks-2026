@@ -65,7 +65,7 @@ export const MapPanel: React.FC<MapPanelProps> = ({ selectedClass }) => {
       const geocoder = new window.google.maps.Geocoder();
       // construct address based on building code
       const buildingCode = room.split(" ")[0].toUpperCase();
-      const address = `UBC ${buildingCode}, Vancouver, BC, Canada`;
+      const address = `UBC ${buildingCode}`;
 
       geocoder.geocode({ address }, (results: any, status: string) => {
         if (status === "OK" && results && results[0]) {

@@ -35,8 +35,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
     return end < now;
   });
 
-  console.log(upcoming, past);
-
   return (
     <aside className="w-[30%] min-w-[360px] h-full flex flex-col border-r border-white/5 bg-background-dark/50 backdrop-blur-xl shrink-0">
       <div className="p-8 pb-6">
