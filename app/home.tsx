@@ -12,6 +12,7 @@ import { formatDatetime } from "@/lib/helpers";
 
 export default function Home() {
   const [liveClasses, setLiveClasses] = useState<LiveClass[]>([]);
+  const [allLiveClasses, setAllLiveClasses] = useState<LiveClass[]>([]); 
   const [searchResults, setSearchResults] = useState<Course[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedClass, setSelectedClass] = useState<LiveClass | null>(null);
@@ -23,7 +24,9 @@ export default function Home() {
         return;
       }
       const res = await fetch(`/api/class/current?now=${formatDatetime(now)}`);
-      setLiveClasses(await res.json());
+      const classes = await res.json();
+      setLiveClasses(classes);
+      setAllLiveClasses(classes); // store original unfiltered list
     })();
   }, [now]);
 
@@ -51,15 +54,16 @@ export default function Home() {
           );
         }
 
-        const data = await response.json();
-        if (data.results && data.results.length > 0) {
-          setLiveClasses(data.results);
-        }
-      } catch (error) {
-        console.error("Search error:", error);
-      } finally {
-        setIsLoading(false);
+      const data = await response.json();
+      if (data.results && data.results.length > 0) {
+        setLiveClasses(data.results);
+        setAllLiveClasses(data.results); 
       }
+    } catch (error) {
+      console.error("Search error:", error);
+    } finally {
+      setIsLoading(false);
+    }
     },
     [now],
   );
@@ -67,6 +71,11 @@ export default function Home() {
   const handleSelectClass = useCallback((item: LiveClass) => {
     setSelectedClass(item);
     setSearchResults([]); // clear search results when focusing on a specific class map location
+  }, []);
+
+  const handleBuildingClick = useCallback((buildingCode: string, filteredClasses: LiveClass[]) => {
+    setLiveClasses(filteredClasses);
+    setSelectedClass(null); 
   }, []);
 
   return (
@@ -91,7 +100,11 @@ export default function Home() {
             <div
               className={`flex-1 transition-all duration-700 ${searchResults.length > 0 ? "h-1/3 opacity-40" : "h-full opacity-100"}`}
             >
-              <MapPanel selectedClass={selectedClass} />
+              <MapPanel 
+                selectedClass={selectedClass} 
+                liveClasses={allLiveClasses}
+                onBuildingClick={handleBuildingClick}
+              />
             </div>
           </div>
 

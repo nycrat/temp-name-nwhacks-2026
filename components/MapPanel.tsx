@@ -1,10 +1,12 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { LiveClass } from "../lib/types";
 
 interface MapPanelProps {
   selectedClass: LiveClass | null;
+  liveClasses?: LiveClass[];
+  onBuildingClick?: (buildingCode: string, filteredClasses: LiveClass[]) => void;
 }
 
 // Global flag to track if script is loading/loaded
@@ -38,7 +40,7 @@ const MAP_STYLE = [
   },
   {
     featureType: "poi.school",
-    stylers: [{ visibility: "on" }],
+    stylers: [{ visibility: "off" }],
   },
   {
     featureType: "poi.school",
@@ -62,36 +64,70 @@ const MAP_STYLE = [
   },
 ];
 
-export const MapPanel: React.FC<MapPanelProps> = ({ selectedClass }) => {
+interface BuildingCoords {
+  code: string;
+  lat: number;
+  lng: number;
+}
+
+export const MapPanel: React.FC<MapPanelProps> = ({ 
+  selectedClass, 
+  liveClasses = [],
+  onBuildingClick 
+}) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const googleMap = useRef<any>(null);
   const marker = useRef<any>(null);
+  const buildingMarkers = useRef<any[]>([]);
   const [isMounted, setIsMounted] = useState(false);
+  const [buildingCoords, setBuildingCoords] = useState<BuildingCoords[]>([]);
 
   const getCoordsForRoom = async (
     room: string,
   ): Promise<{ lat: number; lng: number }> => {
-    return new Promise((resolve) => {
-      const geocoder = new window.google.maps.Geocoder();
-      // construct address based on building code
-      const buildingCode = room.split(" ")[0].toUpperCase();
-      const address = `UBC ${buildingCode}`;
-
-      geocoder.geocode({ address }, (results: any, status: string) => {
-        if (status === "OK" && results && results[0]) {
-          const location = results[0].geometry.location;
-          resolve({
-            lat: location.lat(),
-            lng: location.lng(),
-          });
-        } else {
-          // fallback to UBC center if geocoding fails
-          const fallbackCoords = { lat: 49.2676, lng: -123.2473 };
-          resolve(fallbackCoords);
-        }
-      });
-    });
+    const buildingCode = room.split(" ")[0].toLowerCase();
+    const building = buildingCoords.find(
+      (b) => b.code === buildingCode
+    );
+    if (building) {
+      return { lat: building.lat, lng: building.lng };
+    }
+    // fallback to UBC center if not found
+    return { lat: 49.2676, lng: -123.2473 };
   };
+
+  // load building coordinates from file
+  useEffect(() => {
+    const loadBuildingCoords = async () => {
+      try {
+        const response = await fetch('/buildingcoords.txt');
+        const text = await response.text();
+        const coords: BuildingCoords[] = [];
+        
+        text.split('\n').forEach(line => {
+          const trimmed = line.trim();
+          if (!trimmed) return;
+          
+          const parts = trimmed.split(' ');
+          if (parts.length >= 3) {
+            const code = parts[0].toLowerCase();
+            const lat = parseFloat(parts[1].replace(',', ''));
+            const lng = parseFloat(parts[2]);
+            
+            if (!isNaN(lat) && !isNaN(lng)) {
+              coords.push({ code, lat, lng });
+            }
+          }
+        });
+        
+        setBuildingCoords(coords);
+      } catch (error) {
+        console.error('Failed to load building coordinates:', error);
+      }
+    };
+    
+    loadBuildingCoords();
+  }, []);
 
   useEffect(() => {
     setIsMounted(true);
@@ -171,8 +207,87 @@ export const MapPanel: React.FC<MapPanelProps> = ({ selectedClass }) => {
     document.head.appendChild(script);
   }, [isMounted]);
 
+
+  const clearBuildingMarkers = useCallback(() => {
+    buildingMarkers.current.forEach(m => m.setMap(null));
+    buildingMarkers.current = [];
+  }, []);
+
+  const clearAllMarkers = useCallback(() => {
+    if (marker.current) {
+      marker.current.setMap(null);
+      marker.current = null;
+    }
+    clearBuildingMarkers();
+  }, [clearBuildingMarkers]);
+
+  const showBuildingMarkers = useCallback(() => {
+    if (!googleMap.current || !window.google || buildingCoords.length === 0) return;
+    
+    clearAllMarkers();
+    
+    buildingCoords.forEach(building => {
+      const buildingCodeUpper = building.code.toUpperCase();
+      const buildingClasses = liveClasses.filter(cls => {
+        const classBuildingCode = cls.location.split(' ')[0].toUpperCase();
+        return classBuildingCode === buildingCodeUpper;
+      });
+      
+      const hasClasses = buildingClasses.length > 0;
+      const fillColor = hasClasses ? "#00a1ff" : "#666666"; // blue if has classes, grey if not
+
+      const buildingMarker = new window.google.maps.Marker({
+        position: { lat: building.lat, lng: building.lng },
+        map: googleMap.current,
+        title: building.code.toUpperCase(),
+        icon: {
+          path: window.google.maps.SymbolPath.CIRCLE,
+          scale: 6,
+          fillColor: fillColor,
+          fillOpacity: 0.8,
+          strokeWeight: 2,
+          strokeColor: "#ffffff",
+        },
+      });
+
+      buildingMarker.addListener('click', () => {
+        // filter classes by building code
+        if (onBuildingClick) {
+          onBuildingClick(building.code, buildingClasses);
+        }
+      });
+
+      buildingMarkers.current.push(buildingMarker);
+    });
+  }, [buildingCoords, liveClasses, onBuildingClick, clearAllMarkers]);
+
+  useEffect(() => {
+    if (!googleMap.current || !window.google || buildingCoords.length === 0) return;
+
+    const handleMapClick = () => {
+      if (!selectedClass) {
+        showBuildingMarkers();
+      }
+    };
+
+    googleMap.current.addListener('click', handleMapClick);
+    
+    if (!selectedClass) {
+      showBuildingMarkers();
+    }
+
+    return () => {
+      if (googleMap.current) {
+        window.google?.maps?.event?.clearListeners(googleMap.current, 'click');
+      }
+    };
+  }, [buildingCoords, selectedClass, showBuildingMarkers]);
+
+  // handle selectedClass changes 
   useEffect(() => {
     if (googleMap.current && selectedClass && window.google) {
+      clearBuildingMarkers();
+      
       getCoordsForRoom(selectedClass.location).then((coords) => {
         if (!googleMap.current) return;
 
@@ -180,7 +295,10 @@ export const MapPanel: React.FC<MapPanelProps> = ({ selectedClass }) => {
         googleMap.current.panTo({ lat: coords.lat - 0.00015, lng: coords.lng });
         googleMap.current.setZoom(19);
 
-        if (marker.current) marker.current.setMap(null);
+        // clear existing class marker
+        if (marker.current) {
+          marker.current.setMap(null);
+        }
 
         marker.current = new window.google.maps.Marker({
           position: coords,
@@ -199,9 +317,15 @@ export const MapPanel: React.FC<MapPanelProps> = ({ selectedClass }) => {
       });
     }
     if (googleMap.current && !selectedClass && window.google) {
-      if (marker.current) marker.current.setMap(null);
+      if (marker.current) {
+        marker.current.setMap(null);
+        marker.current = null;
+      }
+      if (buildingCoords.length > 0) {
+        showBuildingMarkers();
+      }
     }
-  }, [selectedClass]);
+  }, [selectedClass, buildingCoords, showBuildingMarkers, clearBuildingMarkers]);
 
   return (
     <div className="w-full h-full relative overflow-hidden rounded-t-3xl border-t border-white/5 bg-background-dark">
