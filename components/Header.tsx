@@ -15,7 +15,7 @@ export const Header: React.FC = () => {
 
         {/* Site Name (TBD)*/}
         <span className="text-xl font-bold tracking-tighter text-white">
-          Audit
+          ATTD
         </span>
       </div>
 
@@ -24,7 +24,7 @@ export const Header: React.FC = () => {
 
       <div className="flex items-center gap-6">
         <span className="text-[10px] uppercase tracking-[0.3em] text-gray-500 font-bold hidden md:block">
-          Lecture Discovery v1.0
+          Campus Lecture Discovery v1.0
         </span>
       </div>
     </nav>

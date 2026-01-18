@@ -11,14 +11,6 @@ interface MapPanelProps {
 let scriptLoading = false;
 let scriptLoaded = false;
 
-// Mock building coordinates for UBC
-const BUILDING_COORDS: Record<string, { lat: number; lng: number }> = {
-  "DMP 110": { lat: 49.2612, lng: -123.2488 },
-  "BUCH A101": { lat: 49.2681, lng: -123.2547 },
-  "HEBB 10": { lat: 49.2662, lng: -123.2523 },
-  "LSK 201": { lat: 49.2651, lng: -123.2504 },
-};
-
 const MAP_STYLE = [
   { elementType: "geometry", stylers: [{ color: "#121212" }] },
   { elementType: "labels.text.stroke", stylers: [{ color: "#121212" }] },
@@ -26,7 +18,7 @@ const MAP_STYLE = [
   {
     featureType: "administrative.locality",
     elementType: "labels.text.fill",
-    stylers: [{ color: "#d59563" }],
+    stylers: [{ color: "white" }],
   },
   {
     featureType: "poi",

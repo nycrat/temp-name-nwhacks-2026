@@ -12,6 +12,7 @@ export const CourseDetailsDrawer: React.FC<CourseDetailsDrawerProps> = ({
   selectedClass,
   onClose,
 }) => {
+
   if (!selectedClass) return null;
 
   const formattedLocation = selectedClass.location
@@ -19,10 +20,12 @@ export const CourseDetailsDrawer: React.FC<CourseDetailsDrawerProps> = ({
     .replace(/\s+/g, "-");
 
   const sneakScoreColors = {
-    Low: "text-green-500",
+    Low: "text-red-500",
     Medium: "text-yellow-500",
-    High: "text-red-500",
+    High: "text-green-500",
   };
+
+  const colorClass = sneakScoreColors[selectedClass.sneakScore] || "text-gray-500";
 
   const mapLink = `https://learningspaces.ubc.ca/classrooms/${formattedLocation}/`;
 
@@ -73,12 +76,10 @@ export const CourseDetailsDrawer: React.FC<CourseDetailsDrawerProps> = ({
                   </div>
                   <div className="bg-white/5 p-2.5 rounded-xl border border-white/5">
                     <span className="block text-[8px] uppercase tracking-widest text-gray-500 font-bold mb-0.5">
-                      Sneak Score
+                      Sneakability
                     </span>
-                    <span
-                      className={`text-xs font-bold ${sneakScoreColors[selectedClass.sneakScore]}`}
-                    >
-                      {selectedClass.sneakScore} Risk
+                    <span className={`text-xs font-bold ${colorClass}`}>
+                      {selectedClass.sneakScore}
                     </span>
                   </div>
                 </div>
