@@ -6,7 +6,10 @@ import { LiveClass } from "../lib/types";
 interface MapPanelProps {
   selectedClass: LiveClass | null;
   liveClasses?: LiveClass[];
-  onBuildingClick?: (buildingCode: string, filteredClasses: LiveClass[]) => void;
+  onBuildingClick?: (
+    buildingCode: string,
+    filteredClasses: LiveClass[],
+  ) => void;
 }
 
 // Global flag to track if script is loading/loaded
@@ -70,10 +73,10 @@ interface BuildingCoords {
   lng: number;
 }
 
-export const MapPanel: React.FC<MapPanelProps> = ({ 
-  selectedClass, 
+export const MapPanel: React.FC<MapPanelProps> = ({
+  selectedClass,
   liveClasses = [],
-  onBuildingClick 
+  onBuildingClick,
 }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const googleMap = useRef<any>(null);
@@ -86,9 +89,7 @@ export const MapPanel: React.FC<MapPanelProps> = ({
     room: string,
   ): Promise<{ lat: number; lng: number }> => {
     const buildingCode = room.split(" ")[0].toLowerCase();
-    const building = buildingCoords.find(
-      (b) => b.code === buildingCode
-    );
+    const building = buildingCoords.find((b) => b.code === buildingCode);
     if (building) {
       return { lat: building.lat, lng: building.lng };
     }
@@ -100,32 +101,32 @@ export const MapPanel: React.FC<MapPanelProps> = ({
   useEffect(() => {
     const loadBuildingCoords = async () => {
       try {
-        const response = await fetch('/buildingcoords.txt');
+        const response = await fetch("/buildingcoords.txt");
         const text = await response.text();
         const coords: BuildingCoords[] = [];
-        
-        text.split('\n').forEach(line => {
+
+        text.split("\n").forEach((line) => {
           const trimmed = line.trim();
           if (!trimmed) return;
-          
-          const parts = trimmed.split(' ');
+
+          const parts = trimmed.split(" ");
           if (parts.length >= 3) {
             const code = parts[0].toLowerCase();
-            const lat = parseFloat(parts[1].replace(',', ''));
+            const lat = parseFloat(parts[1].replace(",", ""));
             const lng = parseFloat(parts[2]);
-            
+
             if (!isNaN(lat) && !isNaN(lng)) {
               coords.push({ code, lat, lng });
             }
           }
         });
-        
+
         setBuildingCoords(coords);
       } catch (error) {
-        console.error('Failed to load building coordinates:', error);
+        console.error("Failed to load building coordinates:", error);
       }
     };
-    
+
     loadBuildingCoords();
   }, []);
 
@@ -207,9 +208,8 @@ export const MapPanel: React.FC<MapPanelProps> = ({
     document.head.appendChild(script);
   }, [isMounted]);
 
-
   const clearBuildingMarkers = useCallback(() => {
-    buildingMarkers.current.forEach(m => m.setMap(null));
+    buildingMarkers.current.forEach((m) => m.setMap(null));
     buildingMarkers.current = [];
   }, []);
 
@@ -222,17 +222,18 @@ export const MapPanel: React.FC<MapPanelProps> = ({
   }, [clearBuildingMarkers]);
 
   const showBuildingMarkers = useCallback(() => {
-    if (!googleMap.current || !window.google || buildingCoords.length === 0) return;
-    
+    if (!googleMap.current || !window.google || buildingCoords.length === 0)
+      return;
+
     clearAllMarkers();
-    
-    buildingCoords.forEach(building => {
+
+    buildingCoords.forEach((building) => {
       const buildingCodeUpper = building.code.toUpperCase();
-      const buildingClasses = liveClasses.filter(cls => {
-        const classBuildingCode = cls.location.split(' ')[0].toUpperCase();
+      const buildingClasses = liveClasses.filter((cls) => {
+        const classBuildingCode = cls.location.split(" ")[0].toUpperCase();
         return classBuildingCode === buildingCodeUpper;
       });
-      
+
       const hasClasses = buildingClasses.length > 0;
       const fillColor = hasClasses ? "#00a1ff" : "#666666"; // blue if has classes, grey if not
 
@@ -250,7 +251,7 @@ export const MapPanel: React.FC<MapPanelProps> = ({
         },
       });
 
-      buildingMarker.addListener('click', () => {
+      buildingMarker.addListener("click", () => {
         // filter classes by building code
         if (onBuildingClick) {
           onBuildingClick(building.code, buildingClasses);
@@ -262,7 +263,8 @@ export const MapPanel: React.FC<MapPanelProps> = ({
   }, [buildingCoords, liveClasses, onBuildingClick, clearAllMarkers]);
 
   useEffect(() => {
-    if (!googleMap.current || !window.google || buildingCoords.length === 0) return;
+    if (!googleMap.current || !window.google || buildingCoords.length === 0)
+      return;
 
     const handleMapClick = () => {
       if (!selectedClass) {
@@ -270,24 +272,24 @@ export const MapPanel: React.FC<MapPanelProps> = ({
       }
     };
 
-    googleMap.current.addListener('click', handleMapClick);
-    
+    googleMap.current.addListener("click", handleMapClick);
+
     if (!selectedClass) {
       showBuildingMarkers();
     }
 
     return () => {
       if (googleMap.current) {
-        window.google?.maps?.event?.clearListeners(googleMap.current, 'click');
+        window.google?.maps?.event?.clearListeners(googleMap.current, "click");
       }
     };
   }, [buildingCoords, selectedClass, showBuildingMarkers]);
 
-  // handle selectedClass changes 
+  // handle selectedClass changes
   useEffect(() => {
     if (googleMap.current && selectedClass && window.google) {
       clearBuildingMarkers();
-      
+
       getCoordsForRoom(selectedClass.location).then((coords) => {
         if (!googleMap.current) return;
 
@@ -325,7 +327,12 @@ export const MapPanel: React.FC<MapPanelProps> = ({
         showBuildingMarkers();
       }
     }
-  }, [selectedClass, buildingCoords, showBuildingMarkers, clearBuildingMarkers]);
+  }, [
+    selectedClass,
+    buildingCoords,
+    showBuildingMarkers,
+    clearBuildingMarkers,
+  ]);
 
   return (
     <div className="w-full h-full relative overflow-hidden rounded-t-3xl border-t border-white/5 bg-background-dark">

@@ -12,7 +12,7 @@ import { formatDatetime } from "@/lib/helpers";
 
 export default function Home() {
   const [liveClasses, setLiveClasses] = useState<LiveClass[]>([]);
-  const [allLiveClasses, setAllLiveClasses] = useState<LiveClass[]>([]); 
+  const [allLiveClasses, setAllLiveClasses] = useState<LiveClass[]>([]);
   const [searchResults, setSearchResults] = useState<Course[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedClass, setSelectedClass] = useState<LiveClass | null>(null);
@@ -54,16 +54,16 @@ export default function Home() {
           );
         }
 
-      const data = await response.json();
-      if (data.results && data.results.length > 0) {
-        setLiveClasses(data.results);
-        setAllLiveClasses(data.results); 
+        const data = await response.json();
+        if (data.results && data.results.length > 0) {
+          setLiveClasses(data.results);
+          setAllLiveClasses(data.results);
+        }
+      } catch (error) {
+        console.error("Search error:", error);
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error) {
-      console.error("Search error:", error);
-    } finally {
-      setIsLoading(false);
-    }
     },
     [now],
   );
@@ -73,10 +73,13 @@ export default function Home() {
     setSearchResults([]); // clear search results when focusing on a specific class map location
   }, []);
 
-  const handleBuildingClick = useCallback((buildingCode: string, filteredClasses: LiveClass[]) => {
-    setLiveClasses(filteredClasses);
-    setSelectedClass(null); 
-  }, []);
+  const handleBuildingClick = useCallback(
+    (buildingCode: string, filteredClasses: LiveClass[]) => {
+      setLiveClasses(filteredClasses);
+      setSelectedClass(null);
+    },
+    [],
+  );
 
   return (
     <div className="flex flex-col h-dvh w-full bg-background-dark text-white font-display overflow-hidden">
@@ -100,8 +103,8 @@ export default function Home() {
             <div
               className={`flex-1 transition-all duration-700 ${searchResults.length > 0 ? "h-1/3 opacity-40" : "h-full opacity-100"}`}
             >
-              <MapPanel 
-                selectedClass={selectedClass} 
+              <MapPanel
+                selectedClass={selectedClass}
                 liveClasses={allLiveClasses}
                 onBuildingClick={handleBuildingClick}
               />
