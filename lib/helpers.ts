@@ -12,6 +12,8 @@ export function stringToTime(timeString: string) {
 
 export function formatTime(datetime: Date) {
   const pad = (n: number) => String(n).padStart(2, "0");
+  const time = `${pad(datetime.getHours() % 12 || 12)}:${pad(datetime.getMinutes())}`;
+  const amPm = datetime.getHours() < 12 ? "AM" : "PM";
 
-  return `${pad(datetime.getHours())}:${pad(datetime.getMinutes())}`;
+  return time + " " + amPm;
 }
