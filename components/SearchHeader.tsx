@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, KeyboardEvent } from "react";
+import React, { useState, KeyboardEvent, useRef } from "react";
+import { useNow } from "./NowProvider";
 
 interface SearchHeaderProps {
   onSearch: (query: string) => void;
@@ -12,6 +13,8 @@ export const SearchHeader: React.FC<SearchHeaderProps> = ({
   isLoading,
 }) => {
   const [value, setValue] = useState("");
+  const { setNow } = useNow();
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -19,9 +22,17 @@ export const SearchHeader: React.FC<SearchHeaderProps> = ({
     }
   };
 
+  const handleButtonClick = () => {
+    inputRef.current?.showPicker?.();
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNow(new Date(e.target.value));
+  };
+
   return (
-    <div className="w-full max-w-5xl px-6">
-      <div className="relative group">
+    <div className="w-full max-w-5xl px-6 flex items-center gap-6">
+      <div className="relative group grow">
         <div className="absolute -inset-0.5 bg-gradient-to-r from-primary/20 to-primary/5 rounded-2xl blur opacity-10 group-hover:opacity-20 transition duration-1000"></div>
 
         <div
@@ -53,6 +64,20 @@ export const SearchHeader: React.FC<SearchHeaderProps> = ({
           </div>
         </div>
       </div>
+
+      <button
+        onClick={handleButtonClick}
+        className="text-gray-500 hover:text-white transition-colors p-1"
+      >
+        <span className="material-symbols-outlined">settings</span>
+      </button>
+
+      <input
+        type="datetime-local"
+        ref={inputRef}
+        onChange={handleChange}
+        className="absolute right-0 top-22 invisible"
+      />
     </div>
   );
 };

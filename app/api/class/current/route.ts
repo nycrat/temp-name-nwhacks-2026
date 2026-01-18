@@ -1,22 +1,13 @@
-import { Course, LiveClass } from "@/lib/types";
-import { neon } from "@neondatabase/serverless";
+import { getLiveClasses } from "@/lib/server";
 
-export async function GET() {
-  const sql = neon(`${process.env.DATABASE_URL}`);
-  const rows = await sql`SELECT * FROM live_classes`;
+export async function GET(req: Request) {
+  const url = new URL(req.url);
+  const params = url.searchParams;
+  const now = params.get("now");
+  if (typeof now != "string") {
+    return Response.json([]);
+  }
 
-  const res = (await Promise.all(
-    rows.map(async (row) => {
-      const [course] =
-        (await sql`SELECT * FROM courses WHERE code = ${row["courseCode"]}`) as Course[];
-
-      const newRow = (({ courseCode, ...rest }) => ({
-        ...rest,
-        course: course,
-      }))(row);
-      return newRow;
-    }),
-  )) as LiveClass[];
-
+  const res = await getLiveClasses(new Date(now));
   return Response.json(res);
 }

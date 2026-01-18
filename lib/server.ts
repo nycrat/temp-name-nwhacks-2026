@@ -1,8 +1,7 @@
 import { Course, LiveClass } from "@/lib/types";
 import { neon } from "@neondatabase/serverless";
-import { now } from "./constants";
 
-export async function getLiveClasses() {
+export async function getLiveClasses(now: Date): Promise<LiveClass[]> {
   const sql = neon(`${process.env.DATABASE_URL}`);
   const weekday = (now.getDay() + 7) % 7;
   const hour = now.getHours().toString() + ":00";

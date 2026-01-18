@@ -1,44 +1,31 @@
 "use client";
 
-import { useState, useCallback, useEffect, use } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Sidebar } from "../components/Sidebar";
 import { SearchHeader } from "../components/SearchHeader";
 import { Header } from "../components/Header";
 import { MapPanel } from "../components/MapPanel";
 import { CourseDetailsDrawer } from "../components/CourseDetailsDrawer";
 import { Course, LiveClass } from "../lib/types";
-import { stringToTime } from "@/lib/helpers";
-import { now } from "@/lib/constants";
+import { useNow } from "@/components/NowProvider";
+import { formatDatetime } from "@/lib/helpers";
 
-export default function Home(props: { liveClasses: Promise<LiveClass[]> }) {
-  const [liveClasses, setLiveClasses] = useState<LiveClass[]>(
-    use(props.liveClasses),
-  );
+export default function Home() {
+  const [liveClasses, setLiveClasses] = useState<LiveClass[]>([]);
   const [searchResults, setSearchResults] = useState<Course[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedClass, setSelectedClass] = useState<LiveClass | null>(null);
+  const { now } = useNow();
 
-  // update class progress based on real time
   useEffect(() => {
-    const updateProgress = () => {
-      setLiveClasses((prev) =>
-        prev.map((cls) => {
-          const elapsed =
-            (now.getTime() - stringToTime(cls.startTime).getTime()) / 60000;
-          if (elapsed < 0) return { ...cls, progress: 0 };
-          const prog = Math.min(
-            100,
-            Math.max(0, (elapsed / cls.durationMinutes) * 100),
-          );
-          return { ...cls, progress: parseFloat(prog.toFixed(1)) };
-        }),
-      );
-    };
-
-    updateProgress();
-    const interval = setInterval(updateProgress, 10000);
-    return () => clearInterval(interval);
-  }, []);
+    (async () => {
+      if (!now) {
+        return;
+      }
+      const res = await fetch(`/api/class/current?now=${formatDatetime(now)}`);
+      setLiveClasses(await res.json());
+    })();
+  }, [now]);
 
   const handleSearch = useCallback(async (query: string) => {
     if (!query.trim()) return;

@@ -1,7 +1,13 @@
-import { getLiveClasses } from "@/lib/server";
-import Home from "./home";
+"use client";
 
-export default async function HomePage() {
-  const liveClasses = getLiveClasses();
-  return <Home liveClasses={liveClasses} />;
+import Home from "./home";
+import { NowProvider } from "@/components/NowProvider";
+
+export default function HomePage() {
+  // const liveClasses = getLiveClasses(new Date());
+  return (
+    <NowProvider>
+      <Home />
+    </NowProvider>
+  );
 }
