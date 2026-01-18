@@ -227,6 +227,15 @@ export const MapPanel: React.FC<MapPanelProps> = ({
     clearAllMarkers();
     
     buildingCoords.forEach(building => {
+      const buildingCodeUpper = building.code.toUpperCase();
+      const buildingClasses = liveClasses.filter(cls => {
+        const classBuildingCode = cls.location.split(' ')[0].toUpperCase();
+        return classBuildingCode === buildingCodeUpper;
+      });
+      
+      const hasClasses = buildingClasses.length > 0;
+      const fillColor = hasClasses ? "#00a1ff" : "#666666"; // blue if has classes, grey if not
+
       const buildingMarker = new window.google.maps.Marker({
         position: { lat: building.lat, lng: building.lng },
         map: googleMap.current,
@@ -234,7 +243,7 @@ export const MapPanel: React.FC<MapPanelProps> = ({
         icon: {
           path: window.google.maps.SymbolPath.CIRCLE,
           scale: 6,
-          fillColor: "#00a1ff",
+          fillColor: fillColor,
           fillOpacity: 0.8,
           strokeWeight: 2,
           strokeColor: "#ffffff",
@@ -243,14 +252,8 @@ export const MapPanel: React.FC<MapPanelProps> = ({
 
       buildingMarker.addListener('click', () => {
         // filter classes by building code
-        const buildingCodeUpper = building.code.toUpperCase();
-        const filteredClasses = liveClasses.filter(cls => {
-          const classBuildingCode = cls.location.split(' ')[0].toUpperCase();
-          return classBuildingCode === buildingCodeUpper;
-        });
-
         if (onBuildingClick) {
-          onBuildingClick(building.code, filteredClasses);
+          onBuildingClick(building.code, buildingClasses);
         }
       });
 
