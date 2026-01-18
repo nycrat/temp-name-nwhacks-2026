@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useCallback, useEffect } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { SearchHeader } from './components/SearchHeader';
@@ -8,6 +10,7 @@ import { LiveClass } from './types';
 const App: React.FC = () => {
   const [liveClasses, setLiveClasses] = useState<LiveClass[]>(INITIAL_LIVE_CLASSES);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedClass, setSelectedClass] = useState<LiveClass | null>(null);
 
   // update class progress based on real time
   useEffect(() => {
@@ -34,13 +37,21 @@ const App: React.FC = () => {
     setIsLoading(false);
   }, []);
 
+  const handleSelectClass = useCallback((item: LiveClass) => {
+    setSelectedClass(item);
+  }, []);
+
   return (
     <div className="flex flex-col h-screen w-full bg-background-dark text-white font-display overflow-hidden">
       <Header />
       
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar maintains the list of live and upcoming classes */}
-        <Sidebar liveClasses={liveClasses} />
+        <Sidebar 
+          liveClasses={liveClasses} 
+          selectedClassId={selectedClass?.id}
+          onSelectClass={handleSelectClass}
+        />
         
         {/* Search Main Panel + future map? */}
         <main className="flex-1 relative flex flex-col items-center justify-center bg-background-dark overflow-hidden p-8">

@@ -104,7 +104,7 @@ export const MapPanel: React.FC<MapPanelProps> = ({ selectedClass }) => {
       return;
     }
 
-    // Check if already loaded
+    // C\heck if already loaded
     if (typeof window !== 'undefined' && window.google && window.google.maps) {
       scriptLoaded = true;
       initMap();

@@ -43,10 +43,10 @@ export default function Home() {
     }, 800);
   }, []);
 
-  const handleSelectClass = (item: LiveClass) => {
+  const handleSelectClass = useCallback((item: LiveClass) => {
     setSelectedClass(item);
     setSearchResults([]); // clear search results when focusing on a specific class map location
-  };
+  }, []);
 
   return (
     <div className="flex flex-col h-screen w-full bg-background-dark text-white font-display overflow-hidden">
