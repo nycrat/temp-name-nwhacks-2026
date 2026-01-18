@@ -19,7 +19,7 @@ export const INITIAL_LIVE_CLASSES: LiveClass[] = [
     durationMinutes: 90,
     capacity: 200,
     sneakScore: 'High',
-    progress: 33
+    type: "Lecture",
   },
   {
     id: '2',
@@ -36,7 +36,7 @@ export const INITIAL_LIVE_CLASSES: LiveClass[] = [
     durationMinutes: 50,
     capacity: 400,
     sneakScore: 'Low',
-    progress: 20
+    type: "Lecture",
   },
   {
     id: '3',
@@ -53,7 +53,7 @@ export const INITIAL_LIVE_CLASSES: LiveClass[] = [
     durationMinutes: 120,
     capacity: 60,
     sneakScore: 'Medium',
-    progress: 0
+    type: "Lecture",
   },
   {
     id: '4',
@@ -70,7 +70,7 @@ export const INITIAL_LIVE_CLASSES: LiveClass[] = [
     durationMinutes: 60,
     capacity: 180,
     sneakScore: 'High',
-    progress: 0
+    type: "Lecture",
   }
 ];
 

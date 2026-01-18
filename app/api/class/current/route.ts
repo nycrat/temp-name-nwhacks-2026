@@ -1,4 +1,4 @@
-import { Course, LiveClass } from "@/app/types";
+import { Course, LiveClass } from "@/lib/types";
 import { neon } from "@neondatabase/serverless";
 
 export async function GET() {
