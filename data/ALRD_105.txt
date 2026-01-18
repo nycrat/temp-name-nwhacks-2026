@@ -1,0 +1,60 @@
+Time: 9:00 | Duration: 90 | Day : 1
+LAW_V 588-W/LEC/002, LAW_V 468-W/LEC/002 Sieg, Rod
+
+Time: 9:00 | Duration: 120 | Day : 2
+LAW_V 476C-W/LEC/001, LAW_V 507-W/LEC/001 Aikenhead, Moira
+
+Time: 9:00 | Duration: 90 | Day : 3
+LAW_V 588-W/LEC/002, LAW_V 468-W/LEC/002 Sieg, Rod
+
+Time: 9:00 | Duration: 120 | Day : 4
+LAW_V 476C-W/LEC/001, LAW_V 507-W/LEC/001 Aikenhead, Moira
+
+Time: 9:30 | Duration: 180 | Day : 5
+LAW_V 300-W/LEC/002 Goldbach, Toby
+
+Time: 10:30 | Duration: 120 | Day : 1
+LAW_V 459C-W/LEC/003, LAW_V 508D-W/LEC/003 Liao, Carol
+
+Time: 10:30 | Duration: 120 | Day : 3
+LAW_V 459C-W/LEC/003, LAW_V 508D-W/LEC/003 Liao, Carol
+
+Time: 11:00 | Duration: 90 | Day : 2
+LAW_V 300-W/LEC/004 Routh, Supriya
+
+Time: 11:00 | Duration: 90 | Day : 4
+LAW_V 300-W/LEC/004 Routh, Supriya
+
+Time: 12:30 | Duration: 90 | Day : 2
+SOCI_V 371-W/LEC/1 
+
+Time: 12:30 | Duration: 90 | Day : 4
+SOCI_V 371-W/LEC/1 
+
+Time: 13:00 | Duration: 60 | Day : 3
+HIST_V 385-W/LEC/201 Murphy, Anne
+
+Time: 14:00 | Duration: 120 | Day : 1
+LAW_V 372C-W/LEC/002, LAW_V 509-W/LEC/002 Stacey, Jocelyn
+
+Time: 14:00 | Duration: 90 | Day : 2
+LAW_V 271-W/LEC/004 Kong, Hoi
+
+Time: 14:00 | Duration: 120 | Day : 3
+LAW_V 372C-W/LEC/002, LAW_V 509-W/LEC/002 Stacey, Jocelyn
+
+Time: 14:00 | Duration: 90 | Day : 4
+LAW_V 271-W/LEC/004 Kong, Hoi
+
+Time: 16:00 | Duration: 60 | Day : 2
+ECON_V 102-W/DIS/L3C 
+
+Time: 16:00 | Duration: 60 | Day : 4
+ECON_V 102-W/DIS/L9B 
+
+Time: 17:00 | Duration: 180 | Day : 4
+LAW_V 469-W/LEC/002, LAW_V 590-W/LEC/002 Clavier, Eric, Kressock, Paul
+
+Time: 18:00 | Duration: 180 | Day : 1
+LAW_V 400-W/LEC/001, LAW_V 552C-W/LEC/001 Shah, Mila, McConchie, Rebecca
+

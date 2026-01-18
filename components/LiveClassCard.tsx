@@ -1,7 +1,8 @@
 'use client';
 
 import React from 'react';
-import { LiveClass } from '../types';
+import { LiveClass } from '../lib/types';
+import { stringToTime } from '@/lib/helpers';
 
 interface LiveClassCardProps {
   item: LiveClass;
@@ -11,15 +12,23 @@ interface LiveClassCardProps {
 
 export const LiveClassCard: React.FC<LiveClassCardProps> = ({ item, onSelect, isSelected }) => {
   const sneakScoreColors = {
-    'Low': 'bg-green-500',
-    'Medium': 'bg-yellow-500',
-    'High': 'bg-red-500'
+    High: "bg-green-500",
+    Medium: "bg-yellow-500",
+    Low: "bg-red-500",
   };
 
   const progress = item.progress || 0;
-  const timeString = item.startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  const endTime = new Date(item.startTime.getTime() + item.durationMinutes * 60000);
-  const endTimeString = endTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const timeString = stringToTime(item.startTime).toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  const endTime = new Date(
+    stringToTime(item.startTime).getTime() + item.durationMinutes * 60000,
+  );
+  const endTimeString = endTime.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -34,21 +43,35 @@ export const LiveClassCard: React.FC<LiveClassCardProps> = ({ item, onSelect, is
       <div className="flex justify-between items-start">
         <div className="flex flex-col max-w-[70%]">
           <div className="flex items-center gap-2 mb-0.5">
-            <h3 className="text-white font-bold text-base group-hover:text-primary transition-colors">{item.course.code}</h3>
-            <span className="text-[8px] text-gray-500 font-mono bg-white/5 px-1 rounded">CAP: {item.capacity}</span>
+            <h3 className="text-white font-bold text-base group-hover:text-primary transition-colors">
+              {item.course.code}
+            </h3>
+            <span className="text-[8px] text-gray-500 font-mono bg-white/5 px-1 rounded">
+              CAP: {item.capacity}
+            </span>
           </div>
-          <p className="text-gray-400 text-xs font-medium truncate">{item.course.name}</p>
-          <span className="text-[10px] text-primary/80 font-medium italic mt-0.5">with {item.instructor}</span>
+          <p className="text-gray-400 text-xs font-medium truncate">
+            {item.course.name}
+          </p>
+          <span className="text-[10px] text-primary/80 font-medium italic mt-0.5">
+            with {item.instructor}
+          </span>
         </div>
         <div className="flex flex-col items-end">
-          <div className="text-[9px] bg-white/5 px-2 py-0.5 rounded text-gray-400 font-mono mb-1">{item.location}</div>
+          <div className="text-[9px] bg-white/5 px-2 py-0.5 rounded text-gray-400 font-mono mb-1">
+            {item.location}
+          </div>
           <div className="flex items-center gap-1">
-             <div className={`size-1.5 rounded-full ${sneakScoreColors[item.sneakScore] || 'bg-gray-500'}`}></div>
-             <span className="text-[8px] text-gray-500 uppercase font-bold tracking-tighter">Sneak: {item.sneakScore}</span>
+            <div
+              className={`size-1.5 rounded-full ${sneakScoreColors[item.sneakScore] || "bg-gray-500"}`}
+            ></div>
+            <span className="text-[8px] text-gray-500 uppercase font-bold tracking-tighter">
+              Sneak: {item.sneakScore}
+            </span>
           </div>
         </div>
       </div>
-      
+
       <div className="mt-3 flex items-center justify-between">
          <div className="flex flex-col">
             <span className="text-[10px] text-gray-500 font-medium">{timeString} - {endTimeString}</span>
