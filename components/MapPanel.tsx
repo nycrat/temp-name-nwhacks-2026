@@ -34,6 +34,29 @@ export const MapPanel: React.FC<MapPanelProps> = ({ selectedClass }) => {
   const googleMap = useRef<any>(null);
   const marker = useRef<any>(null);
   
+  const getCoordsForRoom = async (room: string): Promise<{ lat: number; lng: number }> => {
+
+    return new Promise((resolve) => {
+      const geocoder = new window.google.maps.Geocoder();
+      // construct address based on building code
+      const buildingCode = room.split(' ')[0].toUpperCase();
+      const address = `UBC ${buildingCode}, Vancouver, BC, Canada`;
+      
+      geocoder.geocode({ address }, (results: any, status: string) => {
+        if (status === 'OK' && results && results[0]) {
+          const location = results[0].geometry.location;
+          resolve({
+            lat: location.lat(),
+            lng: location.lng()
+          });
+        } else {
+          // fallback to UBC center if geocoding fails
+          const fallbackCoords = { lat: 49.2676, lng: -123.2473 };
+          resolve(fallbackCoords);
+        }
+      });
+    });
+  };
 
   useEffect(() => {
     const initMap = () => {
@@ -67,27 +90,29 @@ export const MapPanel: React.FC<MapPanelProps> = ({ selectedClass }) => {
   }, []);
 
   useEffect(() => {
-    if (googleMap.current && selectedClass) {
-      const coords = BUILDING_COORDS[selectedClass.location] || { lat: 49.2676, lng: -123.2473 };
-      
-      googleMap.current.panTo(coords);
-      googleMap.current.setZoom(17);
+    if (googleMap.current && selectedClass && window.google) {
+      getCoordsForRoom(selectedClass.location).then((coords) => {
+        if (!googleMap.current) return;
+        
+        googleMap.current.panTo(coords);
+        googleMap.current.setZoom(17);
 
-      if (marker.current) marker.current.setMap(null);
+        if (marker.current) marker.current.setMap(null);
 
-      marker.current = new window.google.maps.Marker({
-        position: coords,
-        map: googleMap.current,
-        title: selectedClass.course.code,
-        animation: window.google.maps.Animation.DROP,
-        icon: {
-          path: window.google.maps.SymbolPath.CIRCLE,
-          scale: 10,
-          fillColor: "#00a1ff",
-          fillOpacity: 1,
-          strokeWeight: 2,
-          strokeColor: "#ffffff",
-        }
+        marker.current = new window.google.maps.Marker({
+          position: coords,
+          map: googleMap.current,
+          title: selectedClass.course.code,
+          animation: window.google.maps.Animation.DROP,
+          icon: {
+            path: window.google.maps.SymbolPath.CIRCLE,
+            scale: 10,
+            fillColor: "#00a1ff",
+            fillOpacity: 1,
+            strokeWeight: 2,
+            strokeColor: "#ffffff",
+          }
+        });
       });
     }
   }, [selectedClass]);
