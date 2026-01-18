@@ -3,6 +3,7 @@
 import React from "react";
 import { LiveClass } from "../lib/types";
 import { formatTime, stringToTime } from "@/lib/helpers";
+import { now } from "@/lib/constants";
 
 interface LiveClassCardProps {
   item: LiveClass;
@@ -21,7 +22,12 @@ export const LiveClassCard: React.FC<LiveClassCardProps> = ({
     Low: "bg-red-500",
   };
 
-  const progress = item.progress || 0;
+  const progress =
+    ((now.getTime() - stringToTime(item.startTime).getTime()) /
+      1000 /
+      60 /
+      item.durationMinutes) *
+    100;
 
   // load / update class info
   if (item.capacity >= 150) {

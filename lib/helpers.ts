@@ -1,9 +1,9 @@
 import { now } from "./constants";
 
-export function stringToTime(timeString: string) {
+export function stringToTime(timeString: string): Date {
   const [hours, minutes] = timeString.split(":").map(Number);
 
-  const today = now;
+  const today = new Date(now);
 
   today.setHours(hours, minutes, 0, 0);
 
