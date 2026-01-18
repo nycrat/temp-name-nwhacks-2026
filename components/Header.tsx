@@ -14,7 +14,7 @@ export const Header: React.FC = () => {
         </div>
 
         {/* Site Name (TBD)*/}
-        <span className="text-xl font-bold tracking-tighter text-white">
+        <span className="text-2xl font-bold tracking-tighter text-white">
           ATTD
         </span>
       </div>
