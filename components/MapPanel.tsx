@@ -335,7 +335,7 @@ export const MapPanel: React.FC<MapPanelProps> = ({
   ]);
 
   return (
-    <div className="w-full h-full relative overflow-hidden rounded-t-3xl border-t border-white/5 bg-background-dark">
+    <div className="w-full h-full relative overflow-hidden border-t border-white/5 bg-background-dark">
       <div ref={mapRef} className="w-full h-full" />
     </div>
   );

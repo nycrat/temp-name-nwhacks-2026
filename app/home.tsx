@@ -94,7 +94,7 @@ export default function Home() {
 
         <main className="flex-1 relative sm:flex flex-col hidden">
           {/* top Fixed Search Area */}
-          <div className="w-full pt-8 pb-4 flex flex-col items-center bg-gradient-to-b from-background-dark to-transparent z-40">
+          <div className="w-full py-6 flex flex-col items-center bg-gradient-to-b from-background-dark to-transparent z-40">
             <SearchHeader onSearch={handleSearch} isLoading={isLoading} />
           </div>
 

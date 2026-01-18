@@ -5,6 +5,16 @@ import { LiveClass } from "../lib/types";
 import { formatTime, getEnd, getLiveClassDatetime } from "@/lib/helpers";
 import { useNow } from "./NowProvider";
 
+const weekdays = {
+  0: "Sunday",
+  1: "Monday",
+  2: "Tuesday",
+  3: "Wednesday",
+  4: "Thursday",
+  5: "Friday",
+  6: "Saturday",
+};
+
 interface LiveClassCardProps {
   item: LiveClass;
   onSelect?: (item: LiveClass) => void;
@@ -29,8 +39,8 @@ export const LiveClassCard: React.FC<LiveClassCardProps> = ({
   };
 
   function getProgress(now: Date) {
-    return now > getLiveClassDatetime(item) && now < getEnd(item)
-      ? ((now.getTime() - getLiveClassDatetime(item).getTime()) /
+    return now > getLiveClassDatetime(item, now) && now < getEnd(item, now)
+      ? ((now.getTime() - getLiveClassDatetime(item, now).getTime()) /
           1000 /
           60 /
           item.durationMinutes) *
@@ -53,9 +63,9 @@ export const LiveClassCard: React.FC<LiveClassCardProps> = ({
     item.sneakScore = "Low";
   }
 
-  const timeString = formatTime(getLiveClassDatetime(item));
+  const timeString = formatTime(getLiveClassDatetime(item, now));
   const endTime = new Date(
-    getLiveClassDatetime(item).getTime() + item.durationMinutes * 60000,
+    getLiveClassDatetime(item, now).getTime() + item.durationMinutes * 60000,
   );
   const endTimeString = formatTime(endTime);
 
@@ -104,7 +114,8 @@ export const LiveClassCard: React.FC<LiveClassCardProps> = ({
       <div className="mt-3 flex items-center justify-between">
         <div className="flex flex-col">
           <span className="text-sm text-gray-500 font-medium">
-            {timeString} - {endTimeString}
+            {weekdays[item.weekday as 0 | 1 | 2 | 3 | 4 | 5 | 6]} {timeString} -{" "}
+            {endTimeString}
           </span>
           <div className="h-1.5 w-28 bg-white/5 rounded-full mt-1.5 overflow-hidden">
             <div
