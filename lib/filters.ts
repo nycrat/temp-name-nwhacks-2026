@@ -28,7 +28,6 @@ export async function buildAndExecuteQuery(
     WHERE 1=1
   `;
 
-  
   const currentTime = now;
   const bufferMins = filters.starts_within_mins ?? 60;
   const futureLimit = new Date(currentTime.getTime() + bufferMins * 60000);
@@ -45,44 +44,50 @@ export async function buildAndExecuteQuery(
       LIMIT 500
     `;
 
-    let rows = allClasses.filter((row: any) => {
-      const courseCode = row.course_code;
-      
-      // filter by subject code
-      if (filters.subjects && filters.subjects.length > 0) {
-        const subjectMatch = filters.subjects.some(subject => 
-          courseCode.startsWith(subject)
-        );
-        if (!subjectMatch) return false;
-      }
+    let rows = allClasses
+      .filter((row: any) => {
+        const courseCode = row.course_code;
 
-      // filter by level
-      const levelMatch = courseCode.match(/\d+/);
-      if (levelMatch) {
-        const level = parseInt(levelMatch[0]);
-        if (filters.level_min && level < filters.level_min) return false;
-        if (filters.level_max && level > filters.level_max) return false;
-      }
+        // filter by subject code
+        if (filters.subjects && filters.subjects.length > 0) {
+          const subjectMatch = filters.subjects.some((subject) =>
+            courseCode.startsWith(subject),
+          );
+          if (!subjectMatch) return false;
+        }
 
-      // filter by duration
-      if (filters.max_duration_mins && row.durationMinutes > filters.max_duration_mins) {
-        return false;
-      }
+        // filter by level
+        const levelMatch = courseCode.match(/\d+/);
+        if (levelMatch) {
+          const level = parseInt(levelMatch[0]);
+          if (filters.level_min && level < filters.level_min) return false;
+          if (filters.level_max && level > filters.level_max) return false;
+        }
 
-      // filter by room capacity/size
-      if (filters.min_capacity && row.capacity < filters.min_capacity) {
-        return false;
-      }
-      if (filters.max_capacity && row.capacity > filters.max_capacity) {
-        return false;
-      }
+        // filter by duration
+        if (
+          filters.max_duration_mins &&
+          row.durationMinutes > filters.max_duration_mins
+        ) {
+          return false;
+        }
 
-      return true;
-    }).slice(0, 100);
+        // filter by room capacity/size
+        if (filters.min_capacity && row.capacity < filters.min_capacity) {
+          return false;
+        }
+        if (filters.max_capacity && row.capacity > filters.max_capacity) {
+          return false;
+        }
+
+        return true;
+      })
+      .slice(0, 100);
 
     const results = await Promise.all(
       rows.map(async (row: any) => {
-        const course = await sql`SELECT * FROM courses WHERE code = ${row.courseCode}`;
+        const course =
+          await sql`SELECT * FROM courses WHERE code = ${row.courseCode}`;
 
         const { courseCode, course_code, ...rest } = row;
         return {
@@ -95,6 +100,8 @@ export async function buildAndExecuteQuery(
     return results;
   } catch (sqlError) {
     console.error("SQL query error:", sqlError);
-    throw new Error(`Database query failed: ${sqlError instanceof Error ? sqlError.message : "Unknown SQL error"}`);
+    throw new Error(
+      `Database query failed: ${sqlError instanceof Error ? sqlError.message : "Unknown SQL error"}`,
+    );
   }
 }

@@ -14,8 +14,8 @@ export const CourseDetailsDrawer: React.FC<CourseDetailsDrawerProps> = ({
 }) => {
   if (!selectedClass) return null;
 
-  const subjectCode = selectedClass.course.code.toLowerCase().split(' ')[0];
-  const possibleExtensions = ['.jpg', '.png', '.jpeg', '.JPG', '.PNG', '.JPEG'];
+  const subjectCode = selectedClass.course.code.toLowerCase().split(" ")[0];
+  const possibleExtensions = [".jpg", ".png", ".jpeg", ".JPG", ".PNG", ".JPEG"];
   const imageUrl = `/assets/${subjectCode}.jpg`;
 
   const formattedLocation = selectedClass.location
@@ -53,15 +53,15 @@ export const CourseDetailsDrawer: React.FC<CourseDetailsDrawerProps> = ({
                 className="w-full h-full object-cover grayscale-[0.2]"
                 alt={selectedClass.course.name}
                 onError={(e) => {
-                  // trying diff extensions 
+                  // trying diff extensions
                   const target = e.target as HTMLImageElement;
                   const currentSrc = target.src;
-                  if (currentSrc.endsWith('.jpg')) {
-                    target.src = currentSrc.replace('.jpg', '.png');
-                  } else if (currentSrc.endsWith('.png')) {
-                    target.src = currentSrc.replace('.png', '.jpeg');
-                  } else if (currentSrc.endsWith('.jpeg')) {
-                    target.src = currentSrc.replace('.jpeg', '.JPG');
+                  if (currentSrc.endsWith(".jpg")) {
+                    target.src = currentSrc.replace(".jpg", ".png");
+                  } else if (currentSrc.endsWith(".png")) {
+                    target.src = currentSrc.replace(".png", ".jpeg");
+                  } else if (currentSrc.endsWith(".jpeg")) {
+                    target.src = currentSrc.replace(".jpeg", ".JPG");
                   }
                 }}
               />

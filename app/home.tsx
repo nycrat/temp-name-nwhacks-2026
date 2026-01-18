@@ -54,9 +54,13 @@ export default function Home(props: { liveClasses: Promise<LiveClass[]> }) {
       });
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ error: "Unknown error" }));
+        const errorData = await response
+          .json()
+          .catch(() => ({ error: "Unknown error" }));
         console.error("Search API error:", errorData);
-        throw new Error(errorData.error || errorData.details || "Search failed");
+        throw new Error(
+          errorData.error || errorData.details || "Search failed",
+        );
       }
 
       const data = await response.json();

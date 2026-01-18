@@ -300,10 +300,7 @@ export async function POST(request: NextRequest) {
     const { query } = await request.json();
 
     if (!query || typeof query !== "string") {
-      return NextResponse.json(
-        { error: "Query is required" },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: "Query is required" }, { status: 400 });
     }
 
     // call OpenRouter api
@@ -322,7 +319,8 @@ export async function POST(request: NextRequest) {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${openrouterApiKey}`,
-          "HTTP-Referer": process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"
+          "HTTP-Referer":
+            process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
         },
         body: JSON.stringify({
           model: "google/gemini-3-flash-preview",
@@ -380,13 +378,16 @@ export async function POST(request: NextRequest) {
     filters.subjects = filters.subjects ?? [];
 
     console.log("Filters from AI:", filters);
-    
+
     try {
       const results = await buildAndExecuteQuery(filters);
       return NextResponse.json({ results } as { results: LiveClass[] });
     } catch (queryError) {
       console.error("Query execution error:", queryError);
-      const queryErrorMessage = queryError instanceof Error ? queryError.message : "Unknown query error";
+      const queryErrorMessage =
+        queryError instanceof Error
+          ? queryError.message
+          : "Unknown query error";
       return NextResponse.json(
         { error: "Database query failed", details: queryErrorMessage },
         { status: 500 },
@@ -394,7 +395,8 @@ export async function POST(request: NextRequest) {
     }
   } catch (error) {
     console.error("Search error:", error);
-    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
     return NextResponse.json(
       { error: "Internal server error", details: errorMessage },
       { status: 500 },

@@ -5,8 +5,9 @@ import { now } from "./constants";
 export async function getLiveClasses() {
   const sql = neon(`${process.env.DATABASE_URL}`);
   const weekday = (now.getDay() + 7) % 7;
-  const hour = now.getHours().toString() + ":00"
-  const rows = await sql`SELECT * FROM live_classes WHERE weekday=${weekday} AND "startTime"=${hour} LIMIT 100`;
+  const hour = now.getHours().toString() + ":00";
+  const rows =
+    await sql`SELECT * FROM live_classes WHERE weekday=${weekday} AND "startTime"=${hour} LIMIT 100`;
 
   const res = (await Promise.all(
     rows.map(async (row) => {
