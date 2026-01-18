@@ -1,3 +1,7 @@
+# ATTD nwHacks 2026
+
+An academic dashboard for discovering live classes. Built for nwHacks 2026.
+
 <div align="center">
     <img src="/public/logo.jpeg" width="128" height="128" style="border-radius: 10px" />
     <h1>ATTD</h1>
@@ -7,11 +11,6 @@
 ![ATTD App](docs/demo_image.png)
 
 Team members: Sophie Jiang, Eric Xiao, Andy Fan
-# ATTD nwHacks 2026
-
-An academic dashboard for discovering live classes. Built for nwHacks 2026.
-
-**Team**: Sophie Jiang, Eric Xiao, Andy Fan
 
 ## Features
 
