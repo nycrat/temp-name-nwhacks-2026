@@ -27,39 +27,42 @@ export default function Home() {
     })();
   }, [now]);
 
-  const handleSearch = useCallback(async (query: string) => {
-    if (!query.trim()) return;
-    setIsLoading(true);
+  const handleSearch = useCallback(
+    async (query: string) => {
+      if (!query.trim()) return;
+      setIsLoading(true);
 
-    try {
-      const response = await fetch("/api/search", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ query, now }),
-      });
+      try {
+        const response = await fetch("/api/search", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ query, now }),
+        });
 
-      if (!response.ok) {
-        const errorData = await response
-          .json()
-          .catch(() => ({ error: "Unknown error" }));
-        console.error("Search API error:", errorData);
-        throw new Error(
-          errorData.error || errorData.details || "Search failed",
-        );
+        if (!response.ok) {
+          const errorData = await response
+            .json()
+            .catch(() => ({ error: "Unknown error" }));
+          console.error("Search API error:", errorData);
+          throw new Error(
+            errorData.error || errorData.details || "Search failed",
+          );
+        }
+
+        const data = await response.json();
+        if (data.results && data.results.length > 0) {
+          setLiveClasses(data.results);
+        }
+      } catch (error) {
+        console.error("Search error:", error);
+      } finally {
+        setIsLoading(false);
       }
-
-      const data = await response.json();
-      if (data.results && data.results.length > 0) {
-        setLiveClasses(data.results);
-      }
-    } catch (error) {
-      console.error("Search error:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+    },
+    [now],
+  );
 
   const handleSelectClass = useCallback((item: LiveClass) => {
     setSelectedClass(item);
