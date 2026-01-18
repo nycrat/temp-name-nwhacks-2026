@@ -76,7 +76,7 @@ export const SearchHeader: React.FC<SearchHeaderProps> = ({
         type="datetime-local"
         ref={inputRef}
         onChange={handleChange}
-        style={{ display: "none" }} // hide the native input
+        className="absolute right-0 top-22 invisible"
       />
     </div>
   );
