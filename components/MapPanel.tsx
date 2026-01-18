@@ -20,7 +20,7 @@ const MAP_STYLE = [
   {
     featureType: "all",
     elementType: "geometry.stroke",
-    stylers: [{ color: "#ffffff" }, { weight: 2 }],
+    stylers: [{ color: "#00a1ff" }, { weight: 2 }],
   },
   {
     featureType: "road",
@@ -48,11 +48,6 @@ const MAP_STYLE = [
   {
     featureType: "poi.school",
     elementType: "labels.text",
-    stylers: [{ color: "#bbbbdd" }],
-  },
-  {
-    featureType: "poi.school",
-    elementType: "labels.text.stroke",
     stylers: [{ visibility: "off" }],
   },
   {
@@ -181,8 +176,9 @@ export const MapPanel: React.FC<MapPanelProps> = ({ selectedClass }) => {
       getCoordsForRoom(selectedClass.location).then((coords) => {
         if (!googleMap.current) return;
 
-        googleMap.current.panTo(coords);
-        googleMap.current.setZoom(17);
+        // offset latitude to make up for course description view at bottom
+        googleMap.current.panTo({ lat: coords.lat - 0.00015, lng: coords.lng });
+        googleMap.current.setZoom(19);
 
         if (marker.current) marker.current.setMap(null);
 
@@ -201,6 +197,9 @@ export const MapPanel: React.FC<MapPanelProps> = ({ selectedClass }) => {
           },
         });
       });
+    }
+    if (googleMap.current && !selectedClass && window.google) {
+      if (marker.current) marker.current.setMap(null);
     }
   }, [selectedClass]);
 
