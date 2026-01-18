@@ -80,7 +80,7 @@ export default function Home(props: { liveClasses: Promise<LiveClass[]> }) {
   }, []);
 
   return (
-    <div className="flex flex-col h-screen w-full bg-background-dark text-white font-display overflow-hidden">
+    <div className="flex flex-col h-dvh w-full bg-background-dark text-white font-display overflow-hidden">
       <Header />
 
       <div className="flex flex-1 overflow-hidden">
@@ -90,7 +90,7 @@ export default function Home(props: { liveClasses: Promise<LiveClass[]> }) {
           onSelectClass={handleSelectClass}
         />
 
-        <main className="flex-1 relative flex flex-col">
+        <main className="flex-1 relative sm:flex flex-col hidden">
           {/* top Fixed Search Area */}
           <div className="w-full pt-8 pb-4 flex flex-col items-center bg-gradient-to-b from-background-dark to-transparent z-40">
             <SearchHeader onSearch={handleSearch} isLoading={isLoading} />
