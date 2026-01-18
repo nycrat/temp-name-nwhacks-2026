@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import React from 'react';
+import React from "react";
 
 export const Header: React.FC = () => {
   return (
@@ -8,20 +8,24 @@ export const Header: React.FC = () => {
       <div className="flex items-center gap-3 select-none cursor-pointer">
         {/* Logo Icon (placeholder for now)*/}
         <div className="size-8 bg-primary rounded-lg flex items-center justify-center shadow-lg shadow-primary/20">
-          <span className="material-symbols-outlined text-white text-xl">account_balance</span>
+          <span className="material-symbols-outlined text-white text-xl">
+            account_balance
+          </span>
         </div>
-        
+
         {/* Site Name (TBD)*/}
         <span className="text-xl font-bold tracking-tighter text-white">
           Audit
         </span>
       </div>
-      
+
       {/* Spacer for potential right-side links in future */}
       <div className="flex-1"></div>
-      
+
       <div className="flex items-center gap-6">
-        <span className="text-[10px] uppercase tracking-[0.3em] text-gray-500 font-bold hidden md:block">Lecture Discovery v1.0</span>
+        <span className="text-[10px] uppercase tracking-[0.3em] text-gray-500 font-bold hidden md:block">
+          Lecture Discovery v1.0
+        </span>
       </div>
     </nav>
   );

@@ -15,11 +15,11 @@ export const INITIAL_LIVE_CLASSES: LiveClass[] = [
     },
     instructor: 'Dr. Reid',
     location: 'SWNG 105',
-    startTime: new Date(now.getTime() - 30 * 60000), // Started 30 mins ago
+    startTime: "12:00", // Started 30 mins ago
     durationMinutes: 90,
     capacity: 200,
     sneakScore: 'High',
-    progress: 33
+    type: "Lecture",
   },
   {
     id: '2',
@@ -32,11 +32,11 @@ export const INITIAL_LIVE_CLASSES: LiveClass[] = [
     },
     instructor: 'Prof. Gateman',
     location: 'BUCH A101',
-    startTime: new Date(now.getTime() - 10 * 60000), // Started 10 mins ago
+    startTime: "17:30", // Started 10 mins ago
     durationMinutes: 50,
     capacity: 400,
     sneakScore: 'Low',
-    progress: 20
+    type: "Lecture",
   },
   {
     id: '3',
@@ -49,11 +49,11 @@ export const INITIAL_LIVE_CLASSES: LiveClass[] = [
     },
     instructor: 'Dr. Singh',
     location: 'HEBB 100',
-    startTime: new Date(now.getTime() + 45 * 60000), // Starts in 45 mins
+    startTime: "18:00", // Starts in 45 mins
     durationMinutes: 120,
     capacity: 60,
     sneakScore: 'Medium',
-    progress: 0
+    type: "Lecture",
   },
   {
     id: '4',
@@ -66,11 +66,11 @@ export const INITIAL_LIVE_CLASSES: LiveClass[] = [
     },
     instructor: 'Prof. Euler',
     location: 'LSK 201',
-    startTime: new Date(now.getTime() + 120 * 60000), // Starts in 2 hours
+    startTime: "16:30", // Starts in 2 hours
     durationMinutes: 60,
     capacity: 180,
     sneakScore: 'High',
-    progress: 0
+    type: "Lecture",
   }
 ];
 
