@@ -29,18 +29,19 @@ export async function buildAndExecuteQuery(
   try {
     const patterns = filters.subjects?.map((s) => s + " %") || [];
 
+    console.log(currentTimeStr, futureTimeStr, patterns, now.getUTCDay());
+
     const allClasses = await sql`
       SELECT *
       FROM live_classes
       WHERE "startTime" >= ${currentTimeStr}
         AND "startTime" <= ${futureTimeStr}
         AND "courseCode" LIKE ANY (${patterns})
-        AND weekday = ${now.getDay()}
+        AND weekday = ${now.getUTCDay()}
         ORDER BY "startTime" ASC
       LIMIT 200
     `;
 
-    console.log(currentTimeStr, futureTimeStr, patterns, now.getDay());
     console.log(allClasses.length);
 
     let rows = allClasses
