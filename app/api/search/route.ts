@@ -14,7 +14,7 @@ const SYSTEM_PROMPT = `You are a search parameter extractor for a university cou
 Key rules:
 If user says "hard", set level_min=300.
 If user says "chill" or "easy", set level_max=200.
-Infer subject codes (e.g. "computers" -> "CPSC"), also infer using context (e.g. "all sciences" -> ["CHEM", "BIOL", "PHYS", "CPSC", "ATSC", ...])
+Infer subject codes (e.g. "computers" -> "CPSC"), also infer using context (e.g. "science courses" -> ["CHEM", "BIOL", "PHYS", "CPSC", "ATSC", ...])
 For room size: "large lecture" or "big room" -> min_capacity=150, "small class" or "intimate" -> max_capacity=50, "medium" -> min_capacity=50, max_capacity=150. If user mentions specific capacity numbers, use those. 
 
 Examples:
@@ -292,8 +292,7 @@ WOOD - Wood Products Processing
 WRDS - Writing, Research, and Discourse Studies
 YDSH - Yiddish
 ZOOL - Zoology
-
-User Input: '{user_input}'`;
+`;
 
 export async function POST(request: NextRequest) {
   try {
@@ -305,6 +304,7 @@ export async function POST(request: NextRequest) {
 
     // call OpenRouter api
     const openrouterApiKey = process.env.OPENROUTER_API_KEY;
+    const openrouterModel = process.env.OPENROUTER_MODEL_NAME;
     if (!openrouterApiKey) {
       return NextResponse.json(
         { error: "OPENROUTER_API_KEY not configured" },
@@ -323,11 +323,11 @@ export async function POST(request: NextRequest) {
             process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
         },
         body: JSON.stringify({
-          model: "google/gemini-3-flash-preview",
+          model: openrouterModel,
           messages: [
             {
               role: "system",
-              content: SYSTEM_PROMPT.replace("{user_input}", query),
+              content: SYSTEM_PROMPT,
             },
             {
               role: "user",
