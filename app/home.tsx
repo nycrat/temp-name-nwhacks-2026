@@ -32,7 +32,7 @@ export default function Home() {
 
   const handleSearch = useCallback(
     async (query: string) => {
-      if (!query.trim()) return;
+      if (!query.trim() || !now) return;
       setIsLoading(true);
 
       try {
@@ -41,7 +41,7 @@ export default function Home() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ query, now }),
+          body: JSON.stringify({ query, now: formatDatetime(now) }),
         });
 
         if (!response.ok) {

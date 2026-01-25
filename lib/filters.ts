@@ -23,8 +23,8 @@ export async function buildAndExecuteQuery(
 
   const bufferMins = filters.starts_within_mins ?? 60;
   const futureLimit = new Date(now.getTime() + bufferMins * 60000);
-  const currentTimeStr = `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`;
-  const futureTimeStr = `${futureLimit.getHours().toString().padStart(2, "0")}:${futureLimit.getMinutes().toString().padStart(2, "0")}`;
+  const currentTimeStr = `${now.getUTCHours().toString().padStart(2, "0")}:${now.getUTCMinutes().toString().padStart(2, "0")}`;
+  const futureTimeStr = `${futureLimit.getUTCHours().toString().padStart(2, "0")}:${futureLimit.getUTCMinutes().toString().padStart(2, "0")}`;
 
   try {
     const patterns = filters.subjects?.map((s) => s + " %") || [];
